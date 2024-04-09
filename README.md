@@ -12,6 +12,15 @@ The actual DNS services used for each zone are queried for the state on each com
 
 Any changed to the DNS that are not tracked in the files will be overwritten on the next deploy.
 
+## Importing an existing zone
+
+The quickest way to get started is to import an existing DNS zone like so:
+
+```
+export CLOUDFLARE_APITOKEN=asdfblahblah
+dnscontrol get-zone --format=js cloudflare - mydomain.com > zones/mydomain.com.js
+```
+
 ## Technical implementation details
 
 Use the `zones/` folder to keep your DNS zones.
