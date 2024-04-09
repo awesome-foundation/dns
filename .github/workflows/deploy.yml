@@ -1,0 +1,24 @@
+# Author: Luka Kladaric @allixsenos
+
+name: Deploy DNS changes
+
+on:
+  push:
+    # Run for pushes to master only
+    branches: [master]
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install latest dnscontrol
+        uses: gacts/install-dnscontrol@v1
+
+      - name: DNSControl push
+        shell: bash
+        id: dnscontrol_push
+        run: dnscontrol push
+        env:
+          CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}

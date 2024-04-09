@@ -1,0 +1,59 @@
+# DNS management with dnscontrol
+
+This repository contains the DNS zones for domains managed with [dnscontrol](https://github.com/StackExchange/dnscontrol).
+
+It uses Github Actions to execute everything and requires no installation on your local machine. You can even manage your DNS directly on github using the web based editor.
+
+Opening a PR will run `dnscontrol check` to perform a syntax check, followed by a `dnscontrol preview` to compare the file contents with the real world and produce a report of changes that will be executed. The report is then posted as a comment on the PR for inspection.
+
+Merging the PR to master will execute `dnscontrol push` which will sync the managed zones to the state found in the files.
+
+The actual DNS services used for each zone are queried for the state on each command.
+
+Any changed to the DNS that are not tracked in the files will be overwritten on the next deploy.
+
+## Technical implementation details
+
+Use the `zones/` folder to keep your DNS zones.
+
+By convention, each file is named `domain.name.js` and only contains a single zone, but the filename has no special meaning and nothing bad happens if you name it something else. Similarly, nothing bad happens if you put multiple zones in one file.
+
+The credentials are defined as Github Actions Secrets.
+
+## Cloudflare setup
+
+1. Create an API token
+   1. Go to your Cloudflare dash -> My Profile -> API Tokens https://dash.cloudflare.com/profile/api-tokens
+   2. Create a token with a useful name
+   3. Give it the following permissions
+       * Zone -> Zone -> Read
+       * Zone -> DNS -> Edit
+       * Zone -> Page Rules -> Edit
+   4. Scope it to specific zones, or the entire account, or however you see fit
+2. Add the newly created token as a Github Actions Repository Secret, under name `CLOUDFLARE_APITOKEN`
+3. Done
+
+## Using a new provider
+
+DNSControl supports many providers, and there will be zero effort to support or document any of them except for Cloudflare which by pure coincidence is the one I use.
+
+Unfortunately, any new credentials will need to be added in 3 places:
+1. Github Actions Repository Secrets
+2. `creds.json` where you just reference the environment variable name in the config block for your provider
+3. `.github/workflows/deploy.yml` and `preview.yml` where they are passed into the `push` and `preview` commands
+
+There does not appear to be a way to configure dnscontrol entirely through envvars, and there does not seem to be a way to expose all (including future) secrets to a job without some significant security risks.
+
+## Testing locally on Mac
+
+```
+brew install dnscontrol
+export CLOUDFLARE_APITOKEN=xyz123
+dnscontrol check
+dnscontrol preview
+dnscontrol push
+```
+
+## Who built this?
+
+Luka Kladaric aka [Chaos Guru](https://chaos.guru) built this because dnscontrol is awesome but getting the PR previews and stuff to work takes a ton of trial and error and I always wished there was a turn key solution.
