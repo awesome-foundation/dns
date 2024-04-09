@@ -56,4 +56,4 @@ dnscontrol push
 
 ## Who built this?
 
-Luka Kladaric aka [Chaos Guru](https://chaos.guru) built this because dnscontrol is awesome but getting the PR previews and stuff to work takes a ton of trial and error and I always wished there was a turn key solution.
+Luka Kladaric aka [Chaos Guru](https://chaos.guru/?utm_source=gh-af-dns) built this because dnscontrol is awesome but getting the PR previews and stuff to work takes a ton of trial and error and I always wished there was a turn key solution.
