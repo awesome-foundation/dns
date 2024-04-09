@@ -1,0 +1,49 @@
+# Author: Luka Kladaric @allixsenos
+
+name: Preview
+
+on: pull_request
+
+permissions:
+  contents: read
+  pull-requests: write # Needed to comment on PRs
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install latest dnscontrol
+        uses: gacts/install-dnscontrol@v1
+
+      - name: DNSControl check
+        shell: bash
+        run: |
+          echo '# dnscontrol check' >> dnscontrol.log
+          echo '```' >> dnscontrol.log
+          dnscontrol --no-colors check |& tee -a dnscontrol.log
+          result_code=${PIPESTATUS[0]}
+          echo '```' >> dnscontrol.log
+          exit $result_code
+
+      - name: DNSControl preview
+        shell: bash
+        run: |
+          echo '# dnscontrol preview' >> dnscontrol.log
+          echo '```' >> dnscontrol.log
+          dnscontrol --no-colors preview |& tee -a dnscontrol.log
+          result_code=${PIPESTATUS[0]}
+          echo '```' >> dnscontrol.log
+          exit $result_code
+        env:
+          CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}
+
+      - name: Preview pull request comment
+        uses: thollander/actions-comment-pull-request@v2
+        if: success() || failure()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          filePath: dnscontrol.log
+          comment_tag: preview
