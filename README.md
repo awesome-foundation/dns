@@ -1,6 +1,6 @@
 # DNS management with dnscontrol
 
-This repository contains the DNS zones for domains managed with [dnscontrol](https://github.com/StackExchange/dnscontrol).
+This repository contains the DNS zones for domains managed with [dnscontrol](https://github.com/StackExchange/dnscontrol) by StackExchange.
 
 It uses Github Actions to execute everything and requires no installation on your local machine. You can even manage your DNS directly on github using the web based editor.
 
