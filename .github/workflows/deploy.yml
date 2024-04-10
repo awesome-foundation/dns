@@ -13,12 +13,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install latest dnscontrol
-        uses: gacts/install-dnscontrol@v1
-
       - name: DNSControl push
-        shell: bash
-        id: dnscontrol_push
-        run: dnscontrol push
+        id: dnscontrol_preview
+        uses: is-cool-me/dnscontrol-action@v4.8.2
+        with:
+          args: push
         env:
           CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}
