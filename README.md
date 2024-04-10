@@ -21,6 +21,12 @@ export CLOUDFLARE_APITOKEN=asdfblahblah
 dnscontrol get-zone --format=js cloudflare - mydomain.com > zones/mydomain.com.js
 ```
 
+To import ALL zones from your account to their individual zone files, run:
+
+```
+dnscontrol get-zone --format=nameonly cloudflare - all | xargs -n1 -I@ dnscontrol get-zone --format=js --out zones/@.js cloudflare - @
+```
+
 ## Technical implementation details
 
 Use the `zones/` folder to keep your DNS zones.
