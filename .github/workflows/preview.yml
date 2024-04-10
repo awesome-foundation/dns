@@ -14,29 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install latest dnscontrol
-        uses: gacts/install-dnscontrol@v1
-
       - name: DNSControl check
-        shell: bash
-        run: |
-          echo '# dnscontrol check' >> dnscontrol.log
-          echo '```' >> dnscontrol.log
-          dnscontrol --no-colors check |& tee -a dnscontrol.log
-          result_code=${PIPESTATUS[0]}
-          echo '```' >> dnscontrol.log
-          exit $result_code
+        id: dnscontrol_check
+        uses: is-cool-me/dnscontrol-action@v4.8.2
+        with:
+          args: check
+        env:
+          NO_COLOR: yes # disable colors
 
       - name: DNSControl preview
-        shell: bash
-        run: |
-          echo '# dnscontrol preview' >> dnscontrol.log
-          echo '```' >> dnscontrol.log
-          dnscontrol --no-colors preview |& tee -a dnscontrol.log
-          result_code=${PIPESTATUS[0]}
-          echo '```' >> dnscontrol.log
-          exit $result_code
+        id: dnscontrol_preview
+        uses: is-cool-me/dnscontrol-action@v4.8.2
+        with:
+          args: preview
         env:
+          NO_COLOR: yes # disable colors
           CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}
 
       - name: Preview pull request comment
@@ -45,5 +37,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          filePath: dnscontrol.log
+          message: |
+            ## DNSControl check
+
+            ```
+            ${{ steps.dnscontrol_check.outputs.output }}
+            ```
+
+            ## DNSControl preview
+
+            ```
+            ${{ steps.dnscontrol_preview.outputs.output }}
+            ```
           comment_tag: preview
+          mode: recreate
