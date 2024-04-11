@@ -48,6 +48,14 @@ The credentials are defined as Github Actions Secrets.
 2. Add the newly created token as a Github Actions Repository Secret, under name `CLOUDFLARE_APITOKEN`
 3. Done
 
+## Why not Terraform?
+
+This got raised enough times that I wrote up an explanation, but would love to hear what people think. Head over to [the Why not Terraform? discussion](https://github.com/awesome-foundation/dns/discussions/3)
+
+## Alternatives
+
+This is going to be a growing list so let's keep it centralized. Please bring all your alternatives to the [Alternatives discussion](https://github.com/awesome-foundation/dns/discussions/4).
+
 ## Using a new provider
 
 DNSControl supports many providers, and there will be zero effort to support or document any of them except for Cloudflare which by pure coincidence is the one I use.
