@@ -27,6 +27,15 @@ To import ALL zones from your account to their individual zone files, run:
 dnscontrol get-zone --format=nameonly cloudflare - all | xargs -n1 -I@ dnscontrol get-zone --format=js --out zones/@.js cloudflare - @
 ```
 
+To import just newly added zones that are not yet managed via this repository, run:
+
+```
+dnscontrol get-zone --format=nameonly cloudflare - all | sort > all_zones.list
+ls zones/*.js | sed 's|zones/||' | sed 's|.js$||' | sort > managed_zones.list
+comm -23 all_zones_sorted.list managed_zones.list  | xargs -n1 -I@ dnscontrol get-zone --format=js --out zones/@.js cloudflare - @
+rm *.list
+```
+
 ## Technical implementation details
 
 Use the `zones/` folder to keep your DNS zones.
