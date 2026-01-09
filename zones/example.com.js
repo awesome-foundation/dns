@@ -1,8 +1,7 @@
 // Author: Luka Kladaric @allixsenos
 
-// set manage_redirects to true to enable redirect management via Page Rules
-// set to false or remove to disable redirect management via Page Rules
-var DNS_CFLARE = NewDnsProvider("cloudflare", {"manage_redirects": true});
+// set manage_single_redirects to true to enable Single Redirects
+var DNS_CFLARE = NewDnsProvider("cloudflare", {"manage_single_redirects": true});
 
 D("example.com", NewRegistrar("none"), DnsProvider(DNS_CFLARE),
 	DefaultTTL(1), // Cloudflare special "auto TTL" https://docs.dnscontrol.org/service-providers/providers/cloudflareapi#cloudflare-special-ttls
