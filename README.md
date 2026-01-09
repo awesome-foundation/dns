@@ -47,13 +47,14 @@ The credentials are defined as Github Actions Secrets.
 ## Cloudflare setup
 
 1. Create an API token
-   1. Go to your Cloudflare dash -> My Profile -> API Tokens https://dash.cloudflare.com/profile/api-tokens
-   2. Create a token with a useful name
-   3. Give it the following permissions
+   1. Go to your Cloudflare dash -> Manage Account -> Account API Tokens https://dash.cloudflare.com/?to=/:account/api-tokens
+   2. Create an Account Owned Token (User API Tokens won't work with Single Redirect APIs)
+   3. Give it a useful name
+   4. Give it the following permissions
        * Zone -> Zone -> Read
        * Zone -> DNS -> Edit
-       * Zone -> Page Rules -> Edit
-   4. Scope it to specific zones, or the entire account, or however you see fit
+       * Zone -> Single Redirect -> Edit
+   5. Scope it to specific zones, or the entire account, or however you see fit
 2. Add the newly created token as a Github Actions Repository Secret, under name `CLOUDFLARE_APITOKEN`
 3. Done
 
