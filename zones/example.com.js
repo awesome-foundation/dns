@@ -25,6 +25,4 @@ D("example.com", NewRegistrar("none"), DnsProvider(DNS_CFLARE),
     // G Suite setup
     MX('@', 1, 'smtp.google.com.'),
 	TXT("google._domainkey", "v=DKIM1; k=rsa; p=asdfblahblah"),
-
-	END  // alias to fix trailing comma issue because javascript is a silly language choice for a configuration file
 )
