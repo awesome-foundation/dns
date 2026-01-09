@@ -14,22 +14,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Install dnscontrol
+        uses: gacts/install-dnscontrol@v1
+
       - name: DNSControl check
         id: dnscontrol_check
-        uses: is-cool-me/dnscontrol-action@v4.8.2
-        with:
-          args: check
         env:
-          NO_COLOR: yes # disable colors
+          NO_COLOR: "1"
+        run: |
+          output=$(dnscontrol check 2>&1) || true
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: DNSControl preview
         id: dnscontrol_preview
-        uses: is-cool-me/dnscontrol-action@v4.8.2
-        with:
-          args: preview
         env:
-          NO_COLOR: yes # disable colors
+          NO_COLOR: "1"
           CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}
+        run: |
+          output=$(dnscontrol preview 2>&1) || true
+          echo "output<<EOF" >> $GITHUB_OUTPUT
+          echo "$output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Preview pull request comment
         uses: thollander/actions-comment-pull-request@v2

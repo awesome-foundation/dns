@@ -1,0 +1,65 @@
+# Author: Luka Kladaric @allixsenos
+
+name: Import zones from Cloudflare
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dnscontrol
+        uses: gacts/install-dnscontrol@v1
+
+      - name: Sync all zones from Cloudflare
+        env:
+          CLOUDFLARE_APITOKEN: ${{ secrets.CLOUDFLARE_APITOKEN }}
+        run: |
+          zones=$(dnscontrol get-zones --format=nameonly cloudflare - all | sort)
+
+          while IFS= read -r zone; do
+            [ -z "$zone" ] && continue
+            echo "Exporting zone: $zone"
+            dnscontrol get-zones --format=js cloudflare - "$zone" > "zones/${zone}.js"
+          done <<< "$zones"
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain zones/)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Sync zones from Cloudflare"
+          title: "Sync zones from Cloudflare"
+          body: |
+            ## Zone Sync
+
+            This PR syncs zone configurations from Cloudflare. Review the diff to see:
+            - New zones added
+            - Changes to existing zones (records added/modified/removed on Cloudflare but not in repo)
+
+            ## Review Checklist
+            - [ ] Review the zone changes in the diff
+            - [ ] Verify the changes match expected state
+            - [ ] Check for any sensitive records that should be removed
+          branch: sync/cloudflare-zones
+          delete-branch: true
+
+      - name: No changes summary
+        if: steps.changes.outputs.has_changes != 'true'
+        run: echo "No changes detected. All zones are in sync with Cloudflare."
