@@ -14,20 +14,29 @@ Any changed to the DNS that are not tracked in the files will be overwritten on 
 
 ## Importing an existing zone
 
-The quickest way to get started is to import an existing DNS zone like so:
+The easiest way to import zones is using the Import workflow:
+
+1. Go to Actions → "Import zones from Cloudflare" → "Run workflow"
+2. The workflow will fetch all zones from your Cloudflare account and create a PR
+3. Review the PR and discard any zone files you don't wish to manage
+4. Merge the PR to start managing those zones
+
+### Manually importing zones
+
+To import a single zone locally:
 
 ```
 export CLOUDFLARE_APITOKEN=asdfblahblah
 dnscontrol get-zone --format=js cloudflare - mydomain.com > zones/mydomain.com.js
 ```
 
-To import ALL zones from your account to their individual zone files, run:
+To import ALL zones from your account to their individual zone files:
 
 ```
 dnscontrol get-zone --format=nameonly cloudflare - all | xargs -n1 -I@ dnscontrol get-zone --format=js --out zones/@.js cloudflare - @
 ```
 
-To import just newly added zones that are not yet managed via this repository, run:
+To import just newly added zones that are not yet managed via this repository:
 
 ```
 dnscontrol get-zone --format=nameonly cloudflare - all | sort > all_zones.list
