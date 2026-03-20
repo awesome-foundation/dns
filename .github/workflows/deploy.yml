@@ -9,6 +9,7 @@ on:
 
 jobs:
   push:
+    if: github.repository != 'awesome-foundation/dns' # Do not run in the template repository — you may delete this line, it has no effect in your repo
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
